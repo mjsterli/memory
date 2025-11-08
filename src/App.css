@@ -19,6 +19,10 @@
   height: 250px;
   width: 150px;
   transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
 .grid-item:hover {
