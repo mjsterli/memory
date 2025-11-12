@@ -20,12 +20,21 @@ function App() {
     if (matches.length == 0) {
       matches.push({ card: card, shape: shape });
     } else {
-      if (matches[0].shape == shape);
+      if (matches[0].shape != shape) {
+        setTimeout(() => {
+          matches[0].card.classList.toggle('grid-item-turnover');
+          card.classList.toggle('grid-item-turnover');
+          matches.length = 0;
+        }, 1000);
+      } else {
+        matches.length = 0;
+      }
     }
   }
 
   const ShapeComponent = ({ name, cards, index }: { name: string; cards: React.MutableRefObject<(HTMLElement | null)[]>; index: number }) => {
-    const size = 75; // Size of the shape in pixels
+    const size = 100;
+    const strokeWidth = 3; // Size of the shape in pixels
 
     const setRef = (elem: HTMLElement | null) => {
       cards.current[index] = elem;
@@ -36,7 +45,7 @@ function App() {
         return (
           <button type="button" className="grid-item-initial" ref={setRef} onClick={() => flipCard(index, name)}>
             <svg width={size} height={size} viewBox="0 0 50 50">
-              <polygon points="25,5 45,45 5,45" stroke="currentColor" fill="none" />
+              <polygon points="25,5 45,45 5,45" stroke="currentColor" strokeWidth={strokeWidth} fill="none" />
             </svg>
           </button>
         );
@@ -44,7 +53,7 @@ function App() {
         return (
           <button type="button" className="grid-item-initial" ref={setRef} onClick={() => flipCard(index, name)}>
             <svg width={size} height={size} viewBox="0 0 60 60">
-              <rect x="5" y="5" width="50" height="50" stroke="currentColor" fill="none" />
+              <rect x="5" y="5" width="50" height="50" stroke="currentColor" strokeWidth={strokeWidth} fill="none" />
             </svg>
           </button>
         );
@@ -52,7 +61,7 @@ function App() {
         return (
           <button type="button" className="grid-item-initial" ref={setRef} onClick={() => flipCard(index, name)}>
             <svg width={size} height={size} viewBox="0 0 50 50">
-              <circle cx="25" cy="25" r="20" stroke="currentColor" fill="none" />
+              <circle cx="25" cy="25" r="20" stroke="currentColor" strokeWidth={strokeWidth} fill="none" />
             </svg>
           </button>
         );

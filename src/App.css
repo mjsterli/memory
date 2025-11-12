@@ -45,8 +45,8 @@
 }
 
 .grid-item-turnover {
-  background: #ffa264;
-
+  background: #fcfcfc;
+  color: #646cff;
   svg {
     visibility: visible;
   }
