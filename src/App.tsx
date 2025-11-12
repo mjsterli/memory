@@ -7,7 +7,7 @@ interface Shape {
 }
 
 function App() {
-  const matches = [];
+  const matches = useRef<{ card: HTMLElement; shape: string }[]>([]);
   const cards = useRef<(HTMLElement | null)[]>([]);
   const [gridShapes, setGridShapes] = useState<Shape[]>([]);
 
@@ -17,17 +17,23 @@ function App() {
     if (!card) return;
     card.classList.toggle('grid-item-turnover');
 
-    if (matches.length == 0) {
-      matches.push({ card: card, shape: shape });
+    if (matches.current.length === 0) {
+      matches.current.push({ card: card, shape: shape });
+      card.setAttribute('disabled', 'true');
     } else {
-      if (matches[0].shape != shape) {
+      if (matches.current[0].shape !== shape) {
         setTimeout(() => {
-          matches[0].card.classList.toggle('grid-item-turnover');
+          const first = matches.current[0];
+          if (first && first.card) {
+            first.card.classList.toggle('grid-item-turnover');
+            first.card.setAttribute('disabled', 'false');
+          }
           card.classList.toggle('grid-item-turnover');
-          matches.length = 0;
+          card.setAttribute('disabled', 'false');
+          matches.current.length = 0;
         }, 1000);
       } else {
-        matches.length = 0;
+        matches.current.length = 0;
       }
     }
   }
