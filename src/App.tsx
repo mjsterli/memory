@@ -12,24 +12,24 @@ function App() {
   const [gridShapes, setGridShapes] = useState<Shape[]>([]);
 
   function flipCard(index: number, shape: string) {
-    const card = cards.current[index];
+    const card = cards.current[index] as HTMLButtonElement;
 
     if (!card) return;
     card.classList.toggle('grid-item-turnover');
 
     if (matches.current.length === 0) {
       matches.current.push({ card: card, shape: shape });
-      card.setAttribute('disabled', 'true');
+      card.disabled = true;
     } else {
       if (matches.current[0].shape !== shape) {
         setTimeout(() => {
-          const first = matches.current[0];
-          if (first && first.card) {
-            first.card.classList.toggle('grid-item-turnover');
-            first.card.setAttribute('disabled', 'false');
+          const first = matches.current[0]?.card as HTMLButtonElement;
+          if (first) {
+            first.classList.toggle('grid-item-turnover');
+            first.disabled = false;
           }
           card.classList.toggle('grid-item-turnover');
-          card.setAttribute('disabled', 'false');
+          card.disabled = false;
           matches.current.length = 0;
         }, 1000);
       } else {
