@@ -3,6 +3,7 @@ import './App.css';
 import shapes from './assets/shapes.json';
 import encouragingPhrases from './assets/encouraging-phrases.json';
 import excitedPhrases from './assets/excited-phrases.json';
+import endingPhrases from './assets/ending-phrases.json';
 
 interface Shape {
   name: string;
@@ -20,6 +21,7 @@ function App() {
 
   const [encourageIndex, setEncourageIndex] = useState(0);
   const [excitedIndex, setExcitedIndex] = useState(0);
+  const [endingIndex, setEndingIndex] = useState(0);
 
   function flipCard(index: number, shape: string) {
     // ignore clicks on already flipped card
@@ -134,14 +136,44 @@ function App() {
             </svg>
           </button>
         );
+
+      case 'Diamond':
+        return (
+          <button type="button" className={`grid-item-initial ${flipped ? 'grid-item-turnover' : ''}`} ref={setRef} onClick={onClick} disabled={disabled}>
+            <svg width={size} height={150} viewBox="0 0 100 150">
+              <polygon points="50,10 90,75 50,140 10,75" fill="none" stroke="currentColor" stroke-width={6} />
+            </svg>
+          </button>
+        );
+
+      case 'Rectangle':
+        return (
+          <button type="button" className={`grid-item-initial ${flipped ? 'grid-item-turnover' : ''}`} ref={setRef} onClick={onClick} disabled={disabled}>
+            <svg width="110" height="60" viewBox="0 0 110 60">
+              <rect x="10" y="10" width="90" height="40" fill="none" stroke="currentColor" stroke-width={5} />
+            </svg>
+          </button>
+        );
       default:
         return null;
     }
   };
 
+  function pickShapes(): { name: string }[] {
+    const selectShapes: { name: string }[] = [];
+
+    while (selectShapes.length < 3) {
+      const rShapeIndex = Math.floor(Math.random() * 10) % shapes.length;
+      if (!selectShapes.find(shape => shape.name == shapes[rShapeIndex].name)) selectShapes.push(shapes[rShapeIndex]);
+    }
+
+    return selectShapes;
+  }
+
   useEffect(() => {
     // Create pairs of shapes to ensure matching is possible
-    const shapePairs = [...shapes, ...shapes];
+    const pickedShapes = pickShapes();
+    const shapePairs = [...pickedShapes, ...pickedShapes];
     // Shuffle the shapes
     const shuffled = shapePairs.sort(() => Math.random() - 0.5);
     setGridShapes(shuffled);
@@ -152,12 +184,15 @@ function App() {
 
   useEffect(() => {
     if (flipped.length != 0 && flipped.reduce((accum: boolean, currValue: boolean) => accum && currValue)) {
-      speak('Good Job Antoine!');
+      speak(endingPhrases[endingIndex]);
+      setEndingIndex(Math.floor((endingIndex + 1) % endingPhrases.length));
+
       setTimeout(() => {
         setFlipped(new Array(6).fill(false));
         setDisabledArr(new Array(6).fill(false));
         setFirst(undefined);
-        const shapePairs = [...shapes, ...shapes];
+        const pickedShapes = pickShapes();
+        const shapePairs = [...pickedShapes, ...pickedShapes];
         // Shuffle the shapes
         const shuffled = shapePairs.sort(() => Math.random() - 0.5);
         setGridShapes(shuffled);
