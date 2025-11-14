@@ -7,37 +7,79 @@ interface Shape {
 }
 
 function App() {
-  const matches = useRef<{ card: HTMLElement; shape: string }[]>([]);
   const cards = useRef<(HTMLElement | null)[]>([]);
   const [gridShapes, setGridShapes] = useState<Shape[]>([]);
+  // track which cards are face-up
+  const [flipped, setFlipped] = useState<boolean[]>([]);
+  // track which cards are disabled (prevent click)
+  const [disabledArr, setDisabledArr] = useState<boolean[]>([]);
+  // store first selection by index instead of DOM element
+  const [first, setFirst] = useState<{ index: number; shape: string } | undefined>();
 
   function flipCard(index: number, shape: string) {
-    const card = cards.current[index] as HTMLButtonElement;
+    // ignore clicks on already flipped card
+    if (flipped[index]) return;
 
-    if (!card) return;
-    card.classList.toggle('grid-item-turnover');
+    // flip this card face-up and disable it immediately to avoid double-click
+    setFlipped(prev => {
+      const nxt = [...prev];
+      nxt[index] = true;
+      return nxt;
+    });
+    setDisabledArr(prev => {
+      const nxt = [...prev];
+      nxt[index] = true;
+      return nxt;
+    });
 
-    if (matches.current.length === 0) {
-      matches.current.push({ card: card, shape: shape });
-      card.disabled = true;
+    if (!first) {
+      setFirst({ index, shape });
     } else {
-      if (matches.current[0].shape !== shape) {
+      // second selection
+      if (first.shape !== shape) {
+        // mismatch: flip both back after a delay and re-enable
         setTimeout(() => {
-          const first = matches.current[0]?.card as HTMLButtonElement;
-          if (first) {
-            first.classList.toggle('grid-item-turnover');
-            first.disabled = false;
-          }
-          card.classList.toggle('grid-item-turnover');
-          card.disabled = false;
-          matches.current.length = 0;
+          setFlipped(prev => {
+            const nxt = [...prev];
+            nxt[first.index] = false;
+            nxt[index] = false;
+            return nxt;
+          });
+          setDisabledArr(prev => {
+            const nxt = [...prev];
+            nxt[first.index] = false;
+            nxt[index] = false;
+            return nxt;
+          });
+          setFirst(undefined);
         }, 1000);
       } else {
-        matches.current.length = 0;
+        // match: keep both flipped and disabled
+        setFlipped(prev => {
+          const nxt = [...prev];
+          nxt[index] = true;
+          return nxt;
+        });
+
+        setDisabledArr(prev => {
+          const nxt = [...prev];
+          nxt[first.index] = true;
+          nxt[index] = true;
+          return nxt;
+        });
+        setFirst(undefined);
       }
     }
 
     speak(shape);
+    if (flipped.reduce((accum: boolean, currValue: boolean) => accum && currValue)) {
+      speak('Good Job Antoine!');
+      setTimeout(() => {
+        setFlipped([]);
+        setDisabledArr([]);
+        setFirst(undefined);
+      }, 2000);
+    }
   }
   function speak(word: string) {
     const utterance = new SpeechSynthesisUtterance(word);
@@ -45,7 +87,21 @@ function App() {
     window.speechSynthesis.speak(utterance);
   }
 
-  const ShapeComponent = ({ name, cards, index }: { name: string; cards: React.MutableRefObject<(HTMLElement | null)[]>; index: number }) => {
+  const ShapeComponent = ({
+    name,
+    cards,
+    index,
+    flipped,
+    disabled,
+    onClick,
+  }: {
+    name: string;
+    cards: React.MutableRefObject<(HTMLElement | null)[]>;
+    index: number;
+    flipped: boolean;
+    disabled: boolean;
+    onClick: () => void;
+  }) => {
     const size = 100;
     const strokeWidth = 3; // Size of the shape in pixels
 
@@ -56,7 +112,7 @@ function App() {
     switch (name) {
       case 'Triangle':
         return (
-          <button type="button" className="grid-item-initial" ref={setRef} onClick={() => flipCard(index, name)}>
+          <button type="button" className={`grid-item-initial ${flipped ? 'grid-item-turnover' : ''}`} ref={setRef} onClick={onClick} disabled={disabled}>
             <svg width={size} height={size} viewBox="0 0 50 50">
               <polygon points="25,5 45,45 5,45" stroke="currentColor" strokeWidth={strokeWidth} fill="none" />
             </svg>
@@ -64,7 +120,7 @@ function App() {
         );
       case 'Square':
         return (
-          <button type="button" className="grid-item-initial" ref={setRef} onClick={() => flipCard(index, name)}>
+          <button type="button" className={`grid-item-initial ${flipped ? 'grid-item-turnover' : ''}`} ref={setRef} onClick={onClick} disabled={disabled}>
             <svg width={size} height={size} viewBox="0 0 60 60">
               <rect x="5" y="5" width="50" height="50" stroke="currentColor" strokeWidth={strokeWidth} fill="none" />
             </svg>
@@ -72,7 +128,7 @@ function App() {
         );
       case 'Circle':
         return (
-          <button type="button" className="grid-item-initial" ref={setRef} onClick={() => flipCard(index, name)}>
+          <button type="button" className={`grid-item-initial ${flipped ? 'grid-item-turnover' : ''}`} ref={setRef} onClick={onClick} disabled={disabled}>
             <svg width={size} height={size} viewBox="0 0 50 50">
               <circle cx="25" cy="25" r="20" stroke="currentColor" strokeWidth={strokeWidth} fill="none" />
             </svg>
@@ -89,13 +145,16 @@ function App() {
     // Shuffle the shapes
     const shuffled = shapePairs.sort(() => Math.random() - 0.5);
     setGridShapes(shuffled);
+    // initialize flipped/disabled arrays
+    setFlipped(new Array(shuffled.length).fill(false));
+    setDisabledArr(new Array(shuffled.length).fill(false));
   }, []);
 
   return (
     <div className="grid-container">
       {gridShapes.map((shape, index) => (
         <div key={index} className="grid-item">
-          <ShapeComponent name={shape.name} cards={cards} index={index} />
+          <ShapeComponent name={shape.name} cards={cards} index={index} flipped={flipped[index]} disabled={disabledArr[index]} onClick={() => flipCard(index, shape.name)} />
         </div>
       ))}
     </div>
