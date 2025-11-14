@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import shapes from './assets/shapes.json';
+import encouragingPhrases from './assets/encouraging-phrases.json';
+import excitedPhrases from './assets/excited-phrases.json';
 
 interface Shape {
   name: string;
@@ -16,10 +18,14 @@ function App() {
   // store first selection by index instead of DOM element
   const [first, setFirst] = useState<{ index: number; shape: string } | undefined>();
 
+  const [encourageIndex, setEncourageIndex] = useState(0);
+  const [excitedIndex, setExcitedIndex] = useState(0);
+
   function flipCard(index: number, shape: string) {
     // ignore clicks on already flipped card
     if (flipped[index]) return;
 
+    speak(shape);
     // flip this card face-up and disable it immediately to avoid double-click
     setFlipped(prev => {
       const nxt = [...prev];
@@ -37,6 +43,8 @@ function App() {
     } else {
       // second selection
       if (first.shape !== shape) {
+        speak(encouragingPhrases[encourageIndex]);
+        setEncourageIndex(Math.floor((encourageIndex + 1) % encouragingPhrases.length));
         // mismatch: flip both back after a delay and re-enable
         setTimeout(() => {
           setFlipped(prev => {
@@ -55,6 +63,8 @@ function App() {
         }, 1000);
       } else {
         // match: keep both flipped and disabled
+        speak(excitedPhrases[excitedIndex]);
+        setExcitedIndex(Math.floor((excitedIndex + 1) % excitedPhrases.length));
         setFlipped(prev => {
           const nxt = [...prev];
           nxt[index] = true;
@@ -69,16 +79,6 @@ function App() {
         });
         setFirst(undefined);
       }
-    }
-
-    speak(shape);
-    if (flipped.reduce((accum: boolean, currValue: boolean) => accum && currValue)) {
-      speak('Good Job Antoine!');
-      setTimeout(() => {
-        setFlipped([]);
-        setDisabledArr([]);
-        setFirst(undefined);
-      }, 2000);
     }
   }
   function speak(word: string) {
@@ -149,6 +149,21 @@ function App() {
     setFlipped(new Array(shuffled.length).fill(false));
     setDisabledArr(new Array(shuffled.length).fill(false));
   }, []);
+
+  useEffect(() => {
+    if (flipped.length != 0 && flipped.reduce((accum: boolean, currValue: boolean) => accum && currValue)) {
+      speak('Good Job Antoine!');
+      setTimeout(() => {
+        setFlipped(new Array(6).fill(false));
+        setDisabledArr(new Array(6).fill(false));
+        setFirst(undefined);
+        const shapePairs = [...shapes, ...shapes];
+        // Shuffle the shapes
+        const shuffled = shapePairs.sort(() => Math.random() - 0.5);
+        setGridShapes(shuffled);
+      }, 2000);
+    }
+  }, [flipped]);
 
   return (
     <div className="grid-container">
