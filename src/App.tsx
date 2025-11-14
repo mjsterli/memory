@@ -36,6 +36,13 @@ function App() {
         matches.current.length = 0;
       }
     }
+
+    speak(shape);
+  }
+  function speak(word: string) {
+    const utterance = new SpeechSynthesisUtterance(word);
+    utterance.lang = 'en-US';
+    window.speechSynthesis.speak(utterance);
   }
 
   const ShapeComponent = ({ name, cards, index }: { name: string; cards: React.MutableRefObject<(HTMLElement | null)[]>; index: number }) => {
