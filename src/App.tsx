@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import shapes from './assets/shapes.json';
-import encouragingPhrases from './assets/encouraging-phrases.json';
-import excitedPhrases from './assets/excited-phrases.json';
 import endingPhrases from './assets/ending-phrases.json';
 
 interface Shape {
@@ -22,8 +20,6 @@ function App() {
     return Math.floor(Math.random() * 10) % endingPhrases.length;
   };
 
-  const [encourageIndex, setEncourageIndex] = useState(0);
-  const [excitedIndex, setExcitedIndex] = useState(0);
   const [endingIndex, setEndingIndex] = useState(getRandomEnding);
   const [disablePage, setDisablePage] = useState(false);
 
