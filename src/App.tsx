@@ -18,10 +18,13 @@ function App() {
   const [disabledArr, setDisabledArr] = useState<boolean[]>([]);
   // store first selection by index instead of DOM element
   const [first, setFirst] = useState<{ index: number; shape: string } | undefined>();
+  const getRandomEnding = () => {
+    return Math.floor(Math.random() * 10) % endingPhrases.length;
+  };
 
   const [encourageIndex, setEncourageIndex] = useState(0);
   const [excitedIndex, setExcitedIndex] = useState(0);
-  const [endingIndex, setEndingIndex] = useState(0);
+  const [endingIndex, setEndingIndex] = useState(getRandomEnding);
   const [disablePage, setDisablePage] = useState(false);
 
   function flipCard(index: number, shape: string) {
@@ -176,7 +179,7 @@ function App() {
   useEffect(() => {
     if (flipped.length != 0 && flipped.reduce((accum: boolean, currValue: boolean) => accum && currValue)) {
       speak(endingPhrases[endingIndex]);
-      setEndingIndex(Math.floor((endingIndex + 1) % endingPhrases.length));
+      setEndingIndex(getRandomEnding);
 
       setTimeout(() => {
         setFlipped(new Array(6).fill(false));
