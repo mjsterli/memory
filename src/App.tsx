@@ -22,6 +22,7 @@ function App() {
   const [encourageIndex, setEncourageIndex] = useState(0);
   const [excitedIndex, setExcitedIndex] = useState(0);
   const [endingIndex, setEndingIndex] = useState(0);
+  const [disablePage, setDisablePage] = useState(false);
 
   function flipCard(index: number, shape: string) {
     // ignore clicks on already flipped card
@@ -40,13 +41,14 @@ function App() {
       return nxt;
     });
 
+    setDisablePage(true);
+
     if (!first) {
       setFirst({ index, shape });
+      setDisablePage(false);
     } else {
       // second selection
       if (first.shape !== shape) {
-        speak(encouragingPhrases[encourageIndex]);
-        setEncourageIndex(Math.floor((encourageIndex + 1) % encouragingPhrases.length));
         // mismatch: flip both back after a delay and re-enable
         setTimeout(() => {
           setFlipped(prev => {
@@ -62,48 +64,37 @@ function App() {
             return nxt;
           });
           setFirst(undefined);
+          setDisablePage(false);
         }, 1000);
       } else {
         // match: keep both flipped and disabled
-        speak(excitedPhrases[excitedIndex]);
-        setExcitedIndex(Math.floor((excitedIndex + 1) % excitedPhrases.length));
-        setFlipped(prev => {
-          const nxt = [...prev];
-          nxt[index] = true;
-          return nxt;
-        });
+        setTimeout(() => {
+          setFlipped(prev => {
+            const nxt = [...prev];
+            nxt[index] = true;
+            return nxt;
+          });
 
-        setDisabledArr(prev => {
-          const nxt = [...prev];
-          nxt[first.index] = true;
-          nxt[index] = true;
-          return nxt;
-        });
-        setFirst(undefined);
+          setDisabledArr(prev => {
+            const nxt = [...prev];
+            nxt[first.index] = true;
+            nxt[index] = true;
+            return nxt;
+          });
+          setFirst(undefined);
+          setDisablePage(false);
+        }, 1000);
       }
     }
   }
+
   function speak(word: string) {
     const utterance = new SpeechSynthesisUtterance(word);
     utterance.lang = 'en-US';
     window.speechSynthesis.speak(utterance);
   }
 
-  const ShapeComponent = ({
-    name,
-    cards,
-    index,
-    flipped,
-    disabled,
-    onClick,
-  }: {
-    name: string;
-    cards: React.MutableRefObject<(HTMLElement | null)[]>;
-    index: number;
-    flipped: boolean;
-    disabled: boolean;
-    onClick: () => void;
-  }) => {
+  const ShapeComponent = ({ name, cards, index, flipped, disabled, onClick }: { name: string; cards: React.MutableRefObject<(HTMLElement | null)[]>; index: number; flipped: boolean; disabled: boolean; onClick: () => void }) => {
     const size = 100;
     const strokeWidth = 3; // Size of the shape in pixels
 
@@ -196,9 +187,9 @@ function App() {
         // Shuffle the shapes
         const shuffled = shapePairs.sort(() => Math.random() - 0.5);
         setGridShapes(shuffled);
-      }, 2000);
+      }, 4000);
     }
-  }, [flipped]);
+  }, flipped);
 
   return (
     <div className="grid-container">
@@ -207,6 +198,20 @@ function App() {
           <ShapeComponent name={shape.name} cards={cards} index={index} flipped={flipped[index]} disabled={disabledArr[index]} onClick={() => flipCard(index, shape.name)} />
         </div>
       ))}
+      {disablePage && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(255, 255, 255, 0.0)',
+            cursor: 'not-allowed',
+            zIndex: 9999,
+          }}
+        />
+      )}{' '}
     </div>
   );
 }
