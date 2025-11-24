@@ -1,13 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import Card from './Card/Card';
-import shapes from './assets/shapes.json';
+// import shapes from './assets/shapes.json';
 import family from './assets/family.json';
 import endingPhrases from './assets/ending-phrases.json';
-
-interface Shape {
-  name: string;
-}
 
 function App() {
   const cards = useRef<(HTMLElement | null)[]>([]);
