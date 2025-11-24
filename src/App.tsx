@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import './App.css';
+import Card from './Card/Card';
 import shapes from './assets/shapes.json';
+import family from './assets/family.json';
 import endingPhrases from './assets/ending-phrases.json';
 
 interface Shape {
@@ -9,7 +11,7 @@ interface Shape {
 
 function App() {
   const cards = useRef<(HTMLElement | null)[]>([]);
-  const [gridShapes, setGridShapes] = useState<Shape[]>([]);
+  const [gridCards, setGridCards] = useState<string[]>([]);
   // track which cards are face-up
   const [flipped, setFlipped] = useState<boolean[]>([]);
   // track which cards are disabled (prevent click)
@@ -93,80 +95,25 @@ function App() {
     window.speechSynthesis.speak(utterance);
   }
 
-  const ShapeComponent = ({ name, cards, index, flipped, disabled, onClick }: { name: string; cards: React.MutableRefObject<(HTMLElement | null)[]>; index: number; flipped: boolean; disabled: boolean; onClick: () => void }) => {
-    const size = 100;
-    const strokeWidth = 3; // Size of the shape in pixels
+  function pickCards(cardNames: string[]): string[] {
+    const pickedCards: string[] = [];
 
-    const setRef = (elem: HTMLElement | null) => {
-      cards.current[index] = elem;
-    };
-
-    switch (name) {
-      case 'Triangle':
-        return (
-          <button type="button" className={`grid-item-initial ${flipped ? 'grid-item-turnover' : ''}`} ref={setRef} onClick={onClick} disabled={disabled}>
-            <svg width={size} height={size} viewBox="0 0 50 50">
-              <polygon points="25,5 45,45 5,45" stroke="currentColor" strokeWidth={strokeWidth} fill="none" />
-            </svg>
-          </button>
-        );
-      case 'Square':
-        return (
-          <button type="button" className={`grid-item-initial ${flipped ? 'grid-item-turnover' : ''}`} ref={setRef} onClick={onClick} disabled={disabled}>
-            <svg width={size} height={size} viewBox="0 0 60 60">
-              <rect x="5" y="5" width="50" height="50" stroke="currentColor" strokeWidth={strokeWidth} fill="none" />
-            </svg>
-          </button>
-        );
-      case 'Circle':
-        return (
-          <button type="button" className={`grid-item-initial ${flipped ? 'grid-item-turnover' : ''}`} ref={setRef} onClick={onClick} disabled={disabled}>
-            <svg width={size} height={size} viewBox="0 0 50 50">
-              <circle cx="25" cy="25" r="20" stroke="currentColor" strokeWidth={strokeWidth} fill="none" />
-            </svg>
-          </button>
-        );
-
-      case 'Diamond':
-        return (
-          <button type="button" className={`grid-item-initial ${flipped ? 'grid-item-turnover' : ''}`} ref={setRef} onClick={onClick} disabled={disabled}>
-            <svg width={size} height={150} viewBox="0 0 100 150">
-              <polygon points="50,10 90,75 50,140 10,75" fill="none" stroke="currentColor" stroke-width={6} />
-            </svg>
-          </button>
-        );
-
-      case 'Rectangle':
-        return (
-          <button type="button" className={`grid-item-initial ${flipped ? 'grid-item-turnover' : ''}`} ref={setRef} onClick={onClick} disabled={disabled}>
-            <svg width="110" height="60" viewBox="0 0 110 60">
-              <rect x="10" y="10" width="90" height="40" fill="none" stroke="currentColor" stroke-width={5} />
-            </svg>
-          </button>
-        );
-      default:
-        return null;
-    }
-  };
-
-  function pickShapes(): { name: string }[] {
-    const selectShapes: { name: string }[] = [];
-
-    while (selectShapes.length < 3) {
-      const rShapeIndex = Math.floor(Math.random() * 10) % shapes.length;
-      if (!selectShapes.find(shape => shape.name == shapes[rShapeIndex].name)) selectShapes.push(shapes[rShapeIndex]);
+    while (pickedCards.length < 3) {
+      const rIndex = Math.floor(Math.random() * 10) % cardNames.length;
+      if (!pickedCards.find(card => card == pickedCards[rIndex])) pickedCards.push(cardNames[rIndex]);
     }
 
-    return selectShapes;
+    return pickedCards;
   }
 
   useEffect(() => {
+    const cardsToUse = (Math.floor((Math.random() * 100) % 2) == 0 ? family : shapes) as string[];
     // Create pairs of shapes to ensure matching is possible
-    const pickedShapes = pickShapes();
-    const shapePairs = [...pickedShapes, ...pickedShapes];
+    const pickedCards = pickCards(cardsToUse);
+    const cardPairs = [...pickedCards, ...pickedCards];
     // Shuffle the shapes
-    const shuffled = shapePairs.sort(() => Math.random() - 0.5);
-    setGridShapes(shuffled);
+    const shuffled = cardPairs.sort(() => Math.random() - 0.5);
+    setGridCards(shuffled);
     // initialize flipped/disabled arrays
     setFlipped(new Array(shuffled.length).fill(false));
     setDisabledArr(new Array(shuffled.length).fill(false));
@@ -181,20 +128,21 @@ function App() {
         setFlipped(new Array(6).fill(false));
         setDisabledArr(new Array(6).fill(false));
         setFirst(undefined);
-        const pickedShapes = pickShapes();
-        const shapePairs = [...pickedShapes, ...pickedShapes];
+        const cardsToUse = family as string[]; //(Math.floor((Math.random() * 100) % 2) == 0 ? family : shapes) as string[];
+        const pickedCards = pickCards(cardsToUse);
+        const cardPairs = [...pickedCards, ...pickedCards];
         // Shuffle the shapes
-        const shuffled = shapePairs.sort(() => Math.random() - 0.5);
-        setGridShapes(shuffled);
+        const shuffled = cardPairs.sort(() => Math.random() - 0.5);
+        setGridCards(shuffled);
       }, 4000);
     }
   }, flipped);
 
   return (
     <div className="grid-container">
-      {gridShapes.map((shape, index) => (
+      {gridCards.map((card, index) => (
         <div key={index} className="grid-item">
-          <ShapeComponent name={shape.name} cards={cards} index={index} flipped={flipped[index]} disabled={disabledArr[index]} onClick={() => flipCard(index, shape.name)} />
+          <Card type="family" name={card} cards={cards} index={index} flipped={flipped[index]} disabled={disabledArr[index]} onClick={() => flipCard(index, card)} />
         </div>
       ))}
       {disablePage && (
