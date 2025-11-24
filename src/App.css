@@ -39,7 +39,8 @@
   height: 100%;
   background: inherit;
 
-  svg {
+  svg,
+  img {
     visibility: hidden;
   }
 }
@@ -47,7 +48,8 @@
 .grid-item-turnover {
   background: #fcfcfc;
   color: #646cff;
-  svg {
+  svg,
+  img {
     visibility: visible;
   }
 }

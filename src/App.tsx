@@ -100,14 +100,14 @@ function App() {
 
     while (pickedCards.length < 3) {
       const rIndex = Math.floor(Math.random() * 10) % cardNames.length;
-      if (!pickedCards.find(card => card == pickedCards[rIndex])) pickedCards.push(cardNames[rIndex]);
+      if (!pickedCards.find(card => card == cardNames[rIndex])) pickedCards.push(cardNames[rIndex]);
     }
 
     return pickedCards;
   }
 
   useEffect(() => {
-    const cardsToUse = (Math.floor((Math.random() * 100) % 2) == 0 ? family : shapes) as string[];
+    const cardsToUse = family as string[]; //(Math.floor((Math.random() * 100) % 2) == 0 ? family : shapes) as string[];
     // Create pairs of shapes to ensure matching is possible
     const pickedCards = pickCards(cardsToUse);
     const cardPairs = [...pickedCards, ...pickedCards];
