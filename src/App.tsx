@@ -95,7 +95,7 @@ function App() {
     const pickedCards: string[] = [];
 
     while (pickedCards.length < 3) {
-      const rIndex = Math.floor(Math.random() * 10) % cardNames.length;
+      const rIndex = Math.floor(Math.random() * 1000) % cardNames.length;
       if (!pickedCards.find(card => card == cardNames[rIndex])) pickedCards.push(cardNames[rIndex]);
     }
 
