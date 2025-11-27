@@ -21,6 +21,15 @@ function App() {
   const [endingIndex, setEndingIndex] = useState(getRandomEnding);
   const [disablePage, setDisablePage] = useState(false);
 
+  const getPicFileNames = () => {
+    const filenames = Object.keys(import.meta.glob('./assets/vector/*', { eager: true })).map(path => {
+      const filename = path.split('/').pop() || '';
+      return filename.replace(/\.[^/.]+$/, '');
+    });
+
+    return filenames;
+  };
+
   function flipCard(index: number, shape: string) {
     // ignore clicks on already flipped card
     if (flipped[index]) return;
@@ -103,7 +112,7 @@ function App() {
   }
 
   useEffect(() => {
-    const cardsToUse = family as string[]; //(Math.floor((Math.random() * 100) % 2) == 0 ? family : shapes) as string[];
+    const cardsToUse = getPicFileNames(); //family as string[]; //(Math.floor((Math.random() * 100) % 2) == 0 ? family : shapes) as string[];
     // Create pairs of shapes to ensure matching is possible
     const pickedCards = pickCards(cardsToUse);
     const cardPairs = [...pickedCards, ...pickedCards];
