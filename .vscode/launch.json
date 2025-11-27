@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome against localhost",
+      "urlFilter": "http://localhost:5173", // Adjust port if necessary
+      "webRoot": "${workspaceFolder}/src",
+      "sourceMaps": true,
+      "userDataDir": false,
+      "runtimeArgs": ["http://localhost:5173", "--remote-debugging-port=9222", "--user-data-dir=${workspaceFolder}/.chrome"], // Optional: Ensures a specific port for debugging
+      "preLaunchTask": "npm dev"
+    },
+    {
+      "type": "chrome",
+      "request": "attach",
+      "name": "Attach to Chrome",
+      "port": 9222,
+      "urlFilter": "http://localhost:5173/*",
+      "webRoot": "${workspaceFolder}/src"
+    }
+  ]
+}
