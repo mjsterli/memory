@@ -1,0 +1,14 @@
+<div class="grid-container">
+  @for (card of Cards(); track $index) {
+    <div key="{index}" class="grid-item">
+      @if (card.Type === 'family') {
+        <family [FamilyMemberName]="card.FaceValue" [FileName]="card.FileName" (click)="flipCard(card)" />
+      } @else if (card.Type === 'shape') {
+        <shape [ShapeName]="card.FaceValue" (click)="flipCard(card)" />
+      }
+    </div>
+  }
+  @if (IsPageDisabled) {
+    <div class="absolute top-0 right-0 left-0 bottom-0 bg-[rgba(255, 255, 255, 0.0)] cursor-not-allowed z-9999"></div>
+  }
+</div>

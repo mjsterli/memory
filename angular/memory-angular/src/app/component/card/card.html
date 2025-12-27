@@ -1,0 +1,7 @@
+<button type="button" [attr.class]="'grid-item-initial' + (IsFlipped ? 'grid-item-turnover' : '')" (click)="Flip()" disabled="{{ IsDisabled }}">
+  @if (Type === 'family') {
+    <family [FamilyMemberName]="FaceValue" [FileName]="FileName"></family>
+  } @else {
+    <shape></shape>
+  }
+</button>
