@@ -1,7 +1,0 @@
-{
-  // create-prettier-config:start
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.fontSize": 16
-  // create-prettier-config:end
-}
