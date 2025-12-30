@@ -38,18 +38,19 @@
   width: 100%;
   height: 100%;
   background: inherit;
+}
 
-  svg,
-  img {
-    visibility: hidden;
-  }
+.grid-item-initial ::ng-deep svg,
+.grid-item-initial ::ng-deep img {
+  visibility: hidden;
 }
 
 .grid-item-turnover {
   background: #fcfcfc;
   color: #646cff;
-  svg,
-  img {
-    visibility: visible;
-  }
+}
+
+.grid-item-turnover ::ng-deep svg,
+.grid-item-turnover ::ng-deep img {
+  visibility: visible;
 }

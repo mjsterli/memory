@@ -59,13 +59,17 @@ export class App implements OnInit {
   pickCards(cardNames: CardData[]): Card[] {
     const pickedCards: Card[] = [];
 
-    while (pickedCards.length < 3) {
+    while (pickedCards.length < 6) {
       const rIndex = Math.floor(Math.random() * 10) % cardNames.length;
       if (!pickedCards.find(card => card.FaceValue == cardNames[rIndex].faceValue)) {
-        const card = new Card();
-        card.FaceValue = cardNames[rIndex].faceValue;
-        card.FileName = cardNames[rIndex].fileName;
-        pickedCards.push(card);
+        let { faceValue, fileName } = cardNames[rIndex];
+        pickedCards.push(new Card()
+        .setFaceValue(faceValue)
+        .setFileName(fileName));
+        
+        pickedCards.push(new Card()
+        .setFaceValue(faceValue)
+        .setFileName(fileName));
       }
     }
 
@@ -75,8 +79,9 @@ export class App implements OnInit {
   ngOnInit(): void {
     const cardsToUse = family as CardData[]; //(Math.floor((Math.random() * 100) % 2) == 0 ? family : shapes) as string[];
     // Create pairs of shapes to ensure matching is possible
-    const pickedCards = this.pickCards(cardsToUse);
-    const cardPairs = [...pickedCards, ...pickedCards];
+    // const pickedCards = this.pickCards(cardsToUse);
+    const cardPairs = this.pickCards(cardsToUse);
+    // const cardPairs = [...pickedCards, ...pickedCards];
     // Shuffle the shapes
     this.Cards.set(cardPairs.sort(() => Math.random() - 0.5));
   }

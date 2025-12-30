@@ -19,4 +19,14 @@ export class Card {
     this.IsFlipped = !this.IsFlipped;
     this.IsDisabled = !this.IsDisabled;
   };
+
+  public setFaceValue(faceValue: string): this {
+    this.FaceValue = faceValue;
+    return this;
+  }
+
+  public setFileName(filename: string): this {
+    this.FileName = filename;
+    return this;
+  }
 }
