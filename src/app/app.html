@@ -2,7 +2,7 @@
   <div class="grid-container">
     @for (card of Cards(); track $index) {
       <div key="{index}" class="grid-item">
-        <button type="button" [attr.class]="'grid-item-initial' + (card.IsFlipped ? ' grid-item-turnover' : '')" (click)="flipCard(card)" disabled="{{ card.IsDisabled }}">
+        <button type="button" [attr.class]="'grid-item-initial'" [class.grid-item-turnover]="card.IsFlipped()" (click)="flipCard(card)" disabled="{{ card.IsDisabled() }}">
           @if (card.Type === 'family') {
             <family [FamilyMemberName]="card.FaceValue" [FileName]="card.FileName" (click)="flipCard(card)" />
           } @else if (card.Type === 'shape') {

@@ -23,7 +23,7 @@ export class App implements OnInit {
 
   flipCard(card: Card): void {
     // ignore clicks on already flipped card
-    if (card.IsFlipped) return;
+    if (card.IsFlipped()) return;
 
     this.speak(card.FaceValue);
     // flip this card face-up and disable it immediately to avoid double-click
@@ -39,12 +39,15 @@ export class App implements OnInit {
         setTimeout(() => {
           this.#firstPicked?.Flip();
           card.Flip();
+          this.#firstPicked = null;
         }, 1000);
       } else {
         // match: keep both flipped and disabled
         setTimeout(() => {
           this.#firstPicked = null;
           this.IsPageDisabled = false;
+
+          if(this.Cards().every(card => card.IsFlipped())) this.resetGame();
         }, 1000);
       }
     }
@@ -76,7 +79,7 @@ export class App implements OnInit {
     return pickedCards;
   }
 
-  ngOnInit(): void {
+  initializeCards(){
     const cardsToUse = family as CardData[]; //(Math.floor((Math.random() * 100) % 2) == 0 ? family : shapes) as string[];
     // Create pairs of shapes to ensure matching is possible
     // const pickedCards = this.pickCards(cardsToUse);
@@ -84,6 +87,18 @@ export class App implements OnInit {
     // const cardPairs = [...pickedCards, ...pickedCards];
     // Shuffle the shapes
     this.Cards.set(cardPairs.sort(() => Math.random() - 0.5));
+  }
+
+  resetGame(){
+    //speak(endingPhrases[endingIndex]);
+      setTimeout(() => {
+        this.initializeCards();
+      }, 4000);
+    
+  }
+
+  ngOnInit(): void {
+    this.initializeCards();
   }
 
   // useEffect(() => {
@@ -99,22 +114,4 @@ export class App implements OnInit {
   //   setDisabledArr(new Array(shuffled.length).fill(false));
   // }, []);
 
-  // useEffect(() => {
-  //   if (flipped.length != 0 && flipped.reduce((accum: boolean, currValue: boolean) => accum && currValue)) {
-  //     speak(endingPhrases[endingIndex]);
-  //     setEndingIndex(getRandomEnding);
-
-  //     setTimeout(() => {
-  //       setFlipped(new Array(6).fill(false));
-  //       setDisabledArr(new Array(6).fill(false));
-  //       setFirst(undefined);
-  //       const cardsToUse = family as string[]; //(Math.floor((Math.random() * 100) % 2) == 0 ? family : shapes) as string[];
-  //       const pickedCards = pickCards(cardsToUse);
-  //       const cardPairs = [...pickedCards, ...pickedCards];
-  //       // Shuffle the shapes
-  //       const shuffled = cardPairs.sort(() => Math.random() - 0.5);
-  //       setGridCards(shuffled);
-  //     }, 4000);
-  //   }
-  // }, flipped);
 }

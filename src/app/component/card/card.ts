@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, WritableSignal, signal } from '@angular/core';
 import { Family } from '../cards/family/family';
 import { Shape } from '../cards/shape/shape';
 
@@ -12,12 +12,12 @@ export class Card {
   @Input() FaceValue: string = '';
   @Input() Type: string = 'family';
   @Input() FileName: string = '';
-  IsFlipped: boolean = false;
-  IsDisabled: boolean = false;
+  @Input() IsFlipped: WritableSignal<boolean> = signal(false);
+  @Input() IsDisabled: WritableSignal<boolean> = signal(false);
 
   public Flip = () => {
-    this.IsFlipped = !this.IsFlipped;
-    this.IsDisabled = !this.IsDisabled;
+    this.IsFlipped.update(isFlipped => !isFlipped);
+    this.IsDisabled.update(isDisabled => !isDisabled);
   };
 
   public setFaceValue(faceValue: string): this {
