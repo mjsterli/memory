@@ -34,7 +34,7 @@ export class App implements OnInit {
       this.#firstPicked = card;
     } else {
       // second selection
-      if (this.#firstPicked.FaceValue !== card.FaceValue) {
+      if (this.#firstPicked.FileName !== card.FileName) {
         // mismatch: flip both back after a delay and re-enable
         setTimeout(() => {
           this.#firstPicked?.Flip();
@@ -63,8 +63,8 @@ export class App implements OnInit {
     const pickedCards: Card[] = [];
 
     while (pickedCards.length < 6) {
-      const rIndex = Math.floor(Math.random() * 10) % cardNames.length;
-      if (!pickedCards.find(card => card.FaceValue == cardNames[rIndex].faceValue)) {
+      const rIndex = Math.floor(Math.random() * 100) % cardNames.length;
+      if (!pickedCards.find(card => card.FileName == cardNames[rIndex].fileName)) {
         let { faceValue, fileName } = cardNames[rIndex];
         pickedCards.push(new Card()
         .setFaceValue(faceValue)

@@ -1,46 +1,94 @@
 [
   {
     "faceValue": "antoine",
-    "fileName": "antoine"
+    "fileName": "001-antoine.png"
   },
   {
     "faceValue": "mommy",
-    "fileName": "mommy"
+    "fileName": "001-mommy.png"
   },
   {
     "faceValue": "daddy",
-    "fileName": "daddy"
+    "fileName": "001-daddy.png"
   },
   {
     "faceValue": "adriana",
-    "fileName": "adriana"
+    "fileName": "001-adriana.png"
   },
   {
     "faceValue": "isaac",
-    "fileName": "isaac"
+    "fileName": "001-isaac.png"
   },
   {
     "faceValue": "nanny",
-    "fileName": "nanny"
+    "fileName": "001-nanny.png"
   },
   {
     "faceValue": "parrain",
-    "fileName": "parrain"
+    "fileName": "001-parrain.png"
   },
   {
     "faceValue": "pawpaw",
-    "fileName": "pawpaw"
+    "fileName": "001-pawpaw.png"
   },
   {
     "faceValue": "granu",
-    "fileName": "granu"
+    "fileName": "001-granu.png"
   },
   {
     "faceValue": "lovie",
-    "fileName": "lovie"
+    "fileName": "001-lovie.png"
   },
   {
     "faceValue": "pop",
-    "fileName": "pop"
+    "fileName": "001-pop.png"
+  },
+  {
+    "faceValue": "aya",
+    "fileName": "001-aya.png"
+  },
+  {
+    "faceValue": "bernard",
+    "fileName": "001-bernard.png"
+  },
+  {
+    "faceValue": "brachiosaurus antoine",
+    "fileName": "brachiosaurus-antoine.png"
+  },
+  {
+    "faceValue": "football antoine",
+    "fileName": "saints-23-antoine.png"
+  },
+  {
+    "faceValue": "saints hat antoine",
+    "fileName": "saints-hat-antoine.png"
+  },
+  {
+    "faceValue": "stegosaurus antoine",
+    "fileName": "stegosaurus-antoine.png"
+  },
+  {
+    "faceValue": "t-rex antoine",
+    "fileName": "t-rex-antoine.png"
+  },
+  {
+    "faceValue": "tee kris",
+    "fileName": "tee-kris.png"
+  },
+  {
+    "faceValue": "tee melissa",
+    "fileName": "tee-melissa.png"
+  },
+  {
+    "faceValue": "triceritops antoine",
+    "fileName": "triceritops-antoine.png"
+  },
+  {
+    "faceValue": "uncle al",
+    "fileName": "uncle-al.png"
+  },
+  {
+    "faceValue": "uncle keith",
+    "fileName": "uncle-keith.png"
   }
 ]
