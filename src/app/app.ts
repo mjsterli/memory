@@ -1,8 +1,10 @@
 import { Component, OnInit, signal, WritableSignal } from '@angular/core';
-import { Card } from './component/card/card';
+import { Card, CardModel } from './component/card/card';
 import { Family } from './component/cards/family/family';
 import { Shape } from './component/cards/shape/shape';
 import family from '../assets/family.json';
+import endingPhrases from '../assets/ending-phrases.json';
+import cardDesigns from '../assets/card-designs.json';
 
 export interface CardData {
   faceValue: string;
@@ -11,27 +13,29 @@ export interface CardData {
 
 @Component({
   selector: 'app-root',
-  imports: [Family, Shape],
+  imports: [Card, Family, Shape],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App implements OnInit {
   protected readonly title = signal('memory-angular');
-  Cards: WritableSignal<Card[]> = signal<Card[]>([]);
-  IsPageDisabled: boolean = false;
-  #firstPicked: Card | null = null;
+  Cards: WritableSignal<CardModel[]> = signal<CardModel[]>([]);
+  IsPageDisabled: WritableSignal<boolean> = signal(false);
+  #firstPicked: CardModel | null = null;
 
-  flipCard(card: Card): void {
+  FlipCard(card: CardModel): void {
     // ignore clicks on already flipped card
     if (card.IsFlipped()) return;
 
     this.speak(card.FaceValue);
+    
     // flip this card face-up and disable it immediately to avoid double-click
     card.Flip();
-    this.IsPageDisabled = true;
+    this.IsPageDisabled.set(true);
 
     if (!this.#firstPicked) {
       this.#firstPicked = card;
+      this.IsPageDisabled.set(false);
     } else {
       // second selection
       if (this.#firstPicked.FileName !== card.FileName) {
@@ -40,14 +44,17 @@ export class App implements OnInit {
           this.#firstPicked?.Flip();
           card.Flip();
           this.#firstPicked = null;
+          this.IsPageDisabled.set(false);
         }, 1000);
       } else {
         // match: keep both flipped and disabled
         setTimeout(() => {
           this.#firstPicked = null;
-          this.IsPageDisabled = false;
+          this.IsPageDisabled.set(false);
 
-          if(this.Cards().every(card => card.IsFlipped())) this.resetGame();
+          if(this.Cards().every(card => card.IsFlipped())) {
+            this.speak(endingPhrases[this.getRandomEnding()]);
+            this.resetGame()};
         }, 1000);
       }
     }
@@ -59,20 +66,27 @@ export class App implements OnInit {
     window.speechSynthesis.speak(utterance);
   }
 
-  pickCards(cardNames: CardData[]): Card[] {
-    const pickedCards: Card[] = [];
+  getCardDesign() {
+    return `${cardDesigns[Math.floor(Math.random() * 10) % cardDesigns.length]}.png`;
+  }
+
+  pickCards(cardNames: CardData[]): CardModel[] {
+    const pickedCards: CardModel[] = [];
+    const cardDesignFileName = this.getCardDesign();
 
     while (pickedCards.length < 6) {
       const rIndex = Math.floor(Math.random() * 100) % cardNames.length;
       if (!pickedCards.find(card => card.FileName == cardNames[rIndex].fileName)) {
         let { faceValue, fileName } = cardNames[rIndex];
-        pickedCards.push(new Card()
+        pickedCards.push(new CardModel()
         .setFaceValue(faceValue)
-        .setFileName(fileName));
-        
-        pickedCards.push(new Card()
+        .setFileName(fileName)
+        .setCardDesign(cardDesignFileName));
+
+        pickedCards.push(new CardModel()
         .setFaceValue(faceValue)
-        .setFileName(fileName));
+        .setFileName(fileName)
+        .setCardDesign(cardDesignFileName));
       }
     }
 
@@ -95,6 +109,10 @@ export class App implements OnInit {
         this.initializeCards();
       }, 4000);
     
+  }
+
+  getRandomEnding() {
+    return Math.floor(Math.random() * 10) % endingPhrases.length;
   }
 
   ngOnInit(): void {

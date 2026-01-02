@@ -1,7 +1,9 @@
-<button type="button" [attr.class]="'grid-item-initial'" [class.grid-item-turnover]="IsFlipped()" (click)="Flip()" disabled="{{ IsDisabled() }}">
-  @if (Type === 'family') {
+<button class="border-0 p-0" type="button" [disabled]="IsDisabled()">
+  @if (!IsFlipped()) {
+    <img [src]="'assets/card-designs/' + CardDesign" class="max-w-full max-h-full object-contain w-auto h-auto rounded-lg" />
+  }
+
+  @if (IsFlipped()) {
     <family [FamilyMemberName]="FaceValue" [FileName]="FileName"></family>
-  } @else {
-    <shape></shape>
   }
 </button>

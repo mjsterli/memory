@@ -90,5 +90,41 @@
   {
     "faceValue": "uncle keith",
     "fileName": "uncle-keith.png"
+  },
+  {
+    "faceValue": "anklyosaurus antoine",
+    "fileName": "anklyosaurus-antoine.png"
+  },
+  {
+    "faceValue": "velociraptor antoine",
+    "fileName": "velociraptor-antoine.png"
+  },
+  {
+    "faceValue": "paw patrol antoine",
+    "fileName": "paw-patrol-antoine.png"
+  },
+  {
+    "faceValue": "pterodactyl antoine",
+    "fileName": "pterodactyl-antoine.png"
+  },
+  {
+    "faceValue": "dimetrodon antoine",
+    "fileName": "dimetrodon-antoine.png"
+  },
+  {
+    "faceValue": "giganotosaurus antoine",
+    "fileName": "giganotosaurus-antoine.png"
+  },
+  {
+    "faceValue": "therizinosaurus antoine",
+    "fileName": "therizinosaurus-antoine.png"
+  },
+  {
+    "faceValue": "artis",
+    "fileName": "001-artis.png"
+  },
+  {
+    "faceValue": "tray",
+    "fileName": "001-tre.png"
   }
 ]
