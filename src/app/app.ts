@@ -2,6 +2,7 @@ import { Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { Card, CardModel } from './component/card/card';
 import { Family } from './component/cards/family/family';
 import { Shape } from './component/cards/shape/shape';
+import { CategoryPicker } from './component/category-picker/category-picker';
 import family from '../assets/family.json';
 import endingPhrases from '../assets/ending-phrases.json';
 import cardDesigns from '../assets/card-designs.json';
@@ -13,7 +14,7 @@ export interface CardData {
 
 @Component({
   selector: 'app-root',
-  imports: [Card, Family, Shape],
+  imports: [Card, Family, Shape, CategoryPicker],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

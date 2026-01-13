@@ -1,12 +1,1 @@
-<div id="root">
-  <div class="grid-container">
-    @for (card of Cards(); track $index) {
-      <div key="{index}" class="grid-item overflow-hidden">
-        <card [cardData]="card" (click)="FlipCard(card)"></card>
-      </div>
-    }
-    @if (IsPageDisabled()) {
-      <div class="absolute top-0 right-0 left-0 bottom-0 bg-[rgba(255, 255, 255, 0.0)] cursor-not-allowed z-9999"></div>
-    }
-  </div>
-</div>
+<category-picker></category-picker>
